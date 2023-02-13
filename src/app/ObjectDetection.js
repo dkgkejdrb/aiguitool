@@ -6,7 +6,7 @@ import Webcam from "react-webcam";
 // https://www.npmjs.com/package/react-webcam
 
 // 나중에 정식 Host URL 필요함
-const SUBMIT_URL = "http://localhost:3007/faceCam";
+const SUBMIT_URL = "http://localhost:3008/objectDetection";
 
 const videoConstraints = {
     width: 1280,
@@ -31,7 +31,7 @@ const base64toFile = (base_data, filename) => {
 }
 
 
-const FaceCam = () => {
+const ObjectDetection = () => {
     const [res, setRes] = useState("");
 
     const webcamRef = React.useRef(null);
@@ -76,7 +76,7 @@ const FaceCam = () => {
     return (
         <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}>
             <div style={{ width: "850px", height: "100%", backgroundColor: "white", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                <div className='title' style={{ fontSize: "30px", marginBottom: "50px" }}>얼굴인식 (캠)</div>
+                <div className='title' style={{ fontSize: "30px", marginBottom: "50px" }}>사물감지 (캠)</div>
                 <div style={{ width: "400px", height: "450px" }}>
                     {
                         isCamOn ?
@@ -107,12 +107,9 @@ const FaceCam = () => {
                     <div style={{ fontSize: "40px", color: "white" }}>
                     {
                         res ?
-                        res.data.faces.map((face) => 
+                        res.data.predictions[0].detection_names.map((obj, index) => 
                             <div style={{ backgroundColor: "black" }}>
-                              {`나이: ${face.age.value} / ${face.age.confidence}`}<br></br>
-                              {`감정: ${face.emotion.value} / ${face.emotion.confidence}`}<br></br>
-                              {`성별: ${face.gender.value} / ${face.gender.confidence}`}<br></br>
-                              {`자세: ${face.pose.value} / ${face.pose.confidence}`}<br></br><br></br>
+                              {`감지된 객체_${index+1}: ${obj}`}<br></br>
                             </div>
                         )
                         :
@@ -129,90 +126,4 @@ const FaceCam = () => {
     );
 }
 
-export default FaceCam;
-
-
-    // // 웹캠 가져오기
-    // const getWebcam = (callback) => {
-    //     try {
-    //         const constraints = {
-    //             'video': true,
-    //             'audio': false
-    //         }
-        
-    //         navigator.mediaDevices.getUserMedia(constraints).then(callback);
-    //     } 
-        
-    //     catch (err) {
-    //         console.log(err);
-    //         return undefined;
-    //     }
-    // }
-
-    // const [playing, setPlaying] = useState(undefined);
-    // const videoRef = React.useRef(null);
-
-    // // 캠 허용
-    // React.useEffect(() => {
-    //     getWebcam((stream => {
-    //         setPlaying(true);
-    //         videoRef.current.srcObject = stream;
-    //     }));
-    // }, []);
-
-    // const startOrStop = () => {
-    //     if(playing) {
-    //         const s = videoRef.current.srcObject;
-    //         s.getTracks().forEach((track) => {
-    //             // console.log(track)
-    //             track.stop();
-    //         });
-    //     } else {
-    //         getWebcam((stream => {
-    //             setPlaying(true);
-    //             videoRef.current.srcObject = stream;
-    //         }));
-    //     }
-    //     setPlaying(!playing);
-    // }
-
-    // const webcamRef = React.useRef(null);
-    // const [imgSrc, setImgSrc] = React.useState(null);
-
-    // // 캠 캡처
-    // const capture = React.useCallback(() => {
-    //     const imageSrc = webcamRef.current.getScreenshot();
-    //     setImgSrc(imageSrc);
-    //     console.log(imageSrc);
-    // }, [webcamRef, setImgSrc]);
-
-
-    // return (
-    //     <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}>
-    //         <div style={{ width: "850px", height: "100%", backgroundColor: "white", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-    //             <div className='title' style={{ fontSize: "30px", marginBottom: "50px" }}>얼굴인식 (캠)</div>
-    //             <video 
-    //                 ref={videoRef}
-    //                 autoPlay={playing}
-    //                 style={{ width: "200px" }}>
-    //             </video>
-    //             <Button style={{ marginTop: "100px", width: "100px", height: "40px" }} type='primary' 
-    //                 onClick={startOrStop}>
-    //                     {playing ? <>Stop</>: <>Start</>}
-    //                 </Button>
-    //             <Button style={{ marginTop: "20px", width: "100px", height: "40px" }}  
-    //                 onClick={capture}
-    //             >캡처하기</Button>
-    //         </div>
-    //     <div style={{ width: "850px", height: "100%", backgroundColor: "black", display: "flex", justifyContent: "center", alignItems: "center"}}>
-    //         <div style={{ width: "400px", fontSize: "40px", color: "white" }}>
-    //             {
-    //                 imgSrc && (
-    //                 <img src={imgSrc}></img>
-    //                 )
-    //             }
-    //         </div>
-    //     </div>
-
-    //   </div>
-    // );
+export default ObjectDetection;

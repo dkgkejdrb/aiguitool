@@ -8,6 +8,7 @@ import Summary from './app/Summary';
 import QuestionAnswering from './app/QuestionAnswering';
 import TextGeneration from './app/TextGeneration';
 import FaceCam from './app/FaceCam';
+import ObjectDetection from './app/ObjectDetection';
 
 // 메뉴 item 폼
 const getItem = (label, key, icon, children, type) => {
@@ -75,11 +76,13 @@ function App() {
             ? <Summary />
             : key === 'questionAnswering'
             ? <QuestionAnswering />
-            : key == 'textGeneration'
+            : key === 'textGeneration'
             ? <TextGeneration />
-            : key == 'faceCam'
-            // ? <FaceCam />
-            // : <></>
+            : key === 'faceCam'
+            ? <FaceCam />
+            : key === 'objectEstimation'
+            ? <ObjectDetection />
+            : <></> 
           }
       </div>
     </div>
