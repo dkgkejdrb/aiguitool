@@ -9,6 +9,9 @@ import QuestionAnswering from './app/QuestionAnswering';
 import TextGeneration from './app/TextGeneration';
 import FaceCam from './app/FaceCam';
 import ObjectDetection from './app/ObjectDetection';
+import ImageTranslateImage from './app/ImageTranslateImage';
+import PapagoTextTranslation from './app/PapagoTextTranslation';
+import PapagoLanguageDetection from './app/PapagoLanguageDetection';
 
 // 메뉴 item 폼
 const getItem = (label, key, icon, children, type) => {
@@ -20,32 +23,34 @@ const getItem = (label, key, icon, children, type) => {
 // 메뉴 컨테이너
 // 두번째 params가 key값
 const items = [
-  getItem('CSR', 'csr', null),
-  getItem('CFR', 'cfr', null, [
-    getItem('Celebrity', 'celebrity'),
-    getItem('Face', 'face'),
-    getItem('Face(Cam)', 'faceCam')
+  getItem('CSR*', 'csr', null),
+  getItem('CFR*', 'cfr', null, [
+    getItem('Celebrity*', 'celebrity'),
+    getItem('Face*', 'face'),
+    getItem('Face(Cam)*', 'faceCam')
   ]),
-  getItem('Sentiment', 'sentiment', null),
-  getItem('Summary', 'summary', null),
-  getItem('Image Translate', 'imageTranslate', null, [
+  getItem('Sentiment*', 'sentiment', null),
+  getItem('Summary*', 'summary', null),
+  getItem('Papago Image Translation*', 'imageTranslate', null, [
     getItem('Text', 'text'),
-    getItem('Image', 'image'),
+    getItem('Image*', 'image'),
   ]),
   getItem('Pose Estimation', 'poseEstimation'),
-  getItem('Object Estimation', 'objectEstimation'),
+  getItem('Object Estimation*', 'objectEstimation'),
   getItem('CLOVA Chatbot', 'chatbot'),
   getItem('CLOVA Studio', 'studio', null, [
     getItem('Classification', 'classification'),
     getItem('Conversation', 'conversation'),
-    getItem('QuestionAnswering', 'questionAnswering'),
+    getItem('QuestionAnswering*', 'questionAnswering'),
     getItem('Summarization', 'summarization'),
-    getItem('Text generation', 'textGeneration'),
+    getItem('Text generation*', 'textGeneration'),
     getItem('Transformation', 'transformation'),
   ]),
+  getItem('Papago Translation*', 'papagoTranslation', null, [
+    getItem('Text', 'papagoTextTranslation'),
+    getItem('LangCode', 'papagoLanguageDetection')
+  ])
 ]
-
-
 
 
 function App() {
@@ -82,7 +87,13 @@ function App() {
             ? <FaceCam />
             : key === 'objectEstimation'
             ? <ObjectDetection />
-            : <></> 
+            : key === 'image'
+            ? <ImageTranslateImage />
+            : key === 'papagoTextTranslation'
+            ? <PapagoTextTranslation />
+            : key === 'papagoLanguageDetection'
+            ? <PapagoLanguageDetection />
+            : <></>
           }
       </div>
     </div>

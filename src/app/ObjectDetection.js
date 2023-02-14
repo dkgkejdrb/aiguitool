@@ -32,7 +32,7 @@ const base64toFile = (base_data, filename) => {
 
 
 const ObjectDetection = () => {
-    const [res, setRes] = useState("");
+    const [res, setRes] = useState(null);
 
     const webcamRef = React.useRef(null);
     // imgSrc 스트림
@@ -40,6 +40,65 @@ const ObjectDetection = () => {
 
     const [isCamOn, setIsCamOn] = useState(false);
     const [captureBtnShow, setCaptureBtnShow] = useState("none");
+
+    // 도형 그리기 캔버스
+    const canvasRef = useRef(null);
+    const contextRef = useRef(null); // 캔버스의 드로잉 컨텍스트를 참조
+    // const [ctx, setCtx] = useState(); // 캔버스의 드로잉 컨텍스트
+
+    let ctx;
+    // 캡쳐 이미지 너비
+    const w = 620;
+    const h = 420;
+
+    useEffect(()=> {
+        // ref로 요소에 접근
+        const canvas = canvasRef.current;
+        canvas.width = w;
+        canvas.height = h;
+
+        ctx = canvas?.getContext("2d");
+        const image = new Image();
+        image.src = imgSrc;
+        image.onload = () => {
+            // strokeRect(x좌표, y좌표, 너비, 너비)
+            ctx?.drawImage(image, 0, 0, w, h);
+            
+
+            // 식별된 사물의 갯수, 길이
+            const len = res?.data.predictions[0].detection_boxes.length;
+
+            for (let i = 0; i < len; ++i) {
+                // 사각형을 펜으로 그리기
+                ctx.beginPath();
+                ctx.strokeStyle = "red"
+                // 시작위치 좌표
+                const startPos = {
+                    x: res?.data.predictions[0].detection_boxes[i][1] * w,
+                    y: res?.data.predictions[0].detection_boxes[i][0] * h,
+                }
+                const endPos = {
+                    x: res?.data.predictions[0].detection_boxes[i][3] * w,
+                    y: res?.data.predictions[0].detection_boxes[i][2] * h,
+                }
+                const textPos = {
+                    x: (res?.data.predictions[0].detection_boxes[i][3] * w) - (res?.data.predictions[0].detection_boxes[i][1] * w),
+                    y: (res?.data.predictions[0].detection_boxes[i][2] * h) - (res?.data.predictions[0].detection_boxes[i][0] * h)
+                }
+                
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "red"
+                ctx.fillText(res.data.predictions[0].detection_names[i], textPos.x, textPos.y)
+                ctx.moveTo(startPos.x, startPos.y);
+                ctx.lineTo(endPos.x, startPos.y);
+                ctx.lineTo(endPos.x, endPos.y);
+                ctx.lineTo(startPos.x, endPos.y);
+                ctx.lineTo(startPos.x, startPos.y)
+                ctx.stroke(); // 테두리 체우기
+            }
+        }
+        
+    }, [imgSrc, res]);
 
     const capture = React.useCallback(
       () => {
@@ -96,20 +155,19 @@ const ObjectDetection = () => {
                     <Button type='primary' onClick={capture} style={{ display: captureBtnShow, width: "100px", height: "100px" }}>캡처</Button>
                 </div>
             </div>
-        <div style={{ width: "850px", height: "100%", backgroundColor: "black", display: "flex", justifyContent: "center", alignItems: "center"}}>
+        <div style={{ width: "850px", height: "100%", 
+        backgroundColor: "black", 
+        display: "flex", justifyContent: "center", alignItems: "center"}}>
             <div style={{ width: "400px", fontSize: "40px", color: "white" }}>
                 <div style={{ width: "400px", height: "450px" }}>
-                    {
-                        imgSrc && (
-                            <img  style={{ width: "400px", height: "320px" }} src={imgSrc}></img>
-                        )
-                    }
-                    <div style={{ fontSize: "40px", color: "white" }}>
+                    {/* 사물인식 도형 그리기 */}
+                    <canvas ref={canvasRef}></canvas>
+                    <div style={{ fontSize: "20px", color: "white" }}>
                     {
                         res ?
                         res.data.predictions[0].detection_names.map((obj, index) => 
                             <div style={{ backgroundColor: "black" }}>
-                              {`감지된 객체_${index+1}: ${obj}`}<br></br>
+                              {`감지된 객체_${index+1}: ${obj} / ${res.data.predictions[0].detection_scores[index]}`}<br></br>
                             </div>
                         )
                         :
