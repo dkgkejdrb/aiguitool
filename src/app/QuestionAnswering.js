@@ -161,7 +161,7 @@ const QuestionAnswering = () => {
       } 
       setInputVisible(false);
       setInputValue('');
-      inputRef.current.input.focus(); 
+      // inputRef.current.input.focus(); 
     };
     // tab 키 클릭 시, 정지키워드에 포커스
     const inputRef = useRef(null);
@@ -425,7 +425,7 @@ const QuestionAnswering = () => {
             <Button
               type='primary'
               onClick={onSubmit}
-              loading
+              // loading
               >
               제출하기
             </Button>
