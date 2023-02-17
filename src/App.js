@@ -64,10 +64,9 @@ function App() {
 
   return (
     <div style={{ width: "100%", height: "100vh" }}>
-      <div
-        style={{ width: "100%", height: "100%", display: "flex", flexDirection: "row", }}
-      >
-        <Menu onClick={onClick} style={{ width: "256px" }} items={items}></Menu>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <Menu onClick={onClick} style={{ width: "1200px" }} items={items} mode="horizontal"></Menu>
+        <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "row", }}>
           {
             key === 'csr'
             ? <Csr />
@@ -95,6 +94,7 @@ function App() {
             ? <PapagoLanguageDetection />
             : <></>
           }
+        </div>
       </div>
     </div>
   );
